@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using GestorPFC.Views.Pages;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,7 @@ namespace GestorPFC
         public MainWindow()
         {
             InitializeComponent();
+            MainFrame.Navigate(new LoginView());
         }
     }
 }
