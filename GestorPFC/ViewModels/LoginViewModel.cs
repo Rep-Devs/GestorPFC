@@ -33,7 +33,6 @@ namespace GestorPFC.ViewModels
         {
             _apiService = new ApiService();
             LoginCommand = new RelayCommand<string>(async (password) => await Login(password));
-
         }
 
         private async Task Login(string password)

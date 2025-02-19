@@ -19,9 +19,9 @@ namespace GestorPFC.Views.Pages
     /// <summary>
     /// Lógica de interacción para LoginView.xaml
     /// </summary>
-    public partial class LoginView : Page
+    public partial class LoginPage : Page
     {
-        public LoginView()
+        public LoginPage()
         {
             InitializeComponent();
             DataContext = new LoginViewModel();

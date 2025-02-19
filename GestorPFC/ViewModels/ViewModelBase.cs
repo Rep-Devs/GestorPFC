@@ -47,5 +47,4 @@ namespace GestorPFC.ViewModels
             await Application.Current.Dispatcher.InvokeAsync(action);
         }
     }
-
 }
