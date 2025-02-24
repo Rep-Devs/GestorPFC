@@ -18,6 +18,7 @@ namespace GestorPFC.ViewModels
 
         private void InitializeViewModel()
         {
+            _isInitialized = true;
 
         }
     }

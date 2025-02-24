@@ -1,51 +1,84 @@
-﻿using GestorPFC.Services;
-using GestorPFC.ViewModels;
-using GestorPFC.Views.Pages;
+﻿
+using System.IO;
+using System.Windows.Threading;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
-using System.Data;
-using System.Windows;
-using System.Windows.Navigation;
+using Wpf.Ui.DependencyInjection;
+using GestorPFC.Services;
+using GestorPFC.Views.Pages;
+using GestorPFC.ViewModels;
 
 namespace GestorPFC
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        // Contenedor de servicios
-        private readonly ServiceProvider _serviceProvider;
 
-        public App()
+        private static readonly IHost _host = Host.CreateDefaultBuilder()
+                    .ConfigureAppConfiguration(c =>
+                    {
+                        var basePath =
+                            Path.GetDirectoryName(AppContext.BaseDirectory)
+                            ?? throw new DirectoryNotFoundException(
+                                "Unable to find the base directory of the application."
+                            );
+                        _ = c.SetBasePath(basePath);
+                    })
+            .ConfigureServices((context, services) =>
+            {
+                // App Host
+                services.AddHostedService<ApplicationHostService>();
+
+                // Registrar Navegación con Wpf.Ui
+                services.AddNavigationViewPageProvider();
+                services.AddSingleton<INavigationService, NavigationService>();
+
+                // Registrar Servicios
+                services.AddSingleton<ApiService>();
+
+                // Registrar Ventana Principal y ViewModel
+                services.AddSingleton<INavigationWindow, MainWindow>();
+                services.AddSingleton<MainWindowViewModel>();
+
+                // Registrar Páginas y ViewModels
+                services.AddSingleton<LoginPage>();
+                services.AddSingleton<LoginViewModel>();
+            })
+            .Build();
+
+
+        /// <summary>
+        /// Gets services.
+        /// </summary>
+        public static IServiceProvider Services
         {
-            // Configurar la inyección de dependencias
-            var services = new ServiceCollection();
-
-            // Servicios
-            services.AddSingleton<ApiService>();
-            services.AddSingleton<NavigationService>();
-
-            // ViewModels
-            services.AddSingleton<LoginViewModel>();
-            //services.AddSingleton<DashboardViewModel>();
-
-            // Views
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<LoginPage>();
-            //services.AddSingleton<DashboardPage>();
-
-            _serviceProvider = services.BuildServiceProvider();
+            get { return _host.Services; }
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        /// <summary>
+        /// Occurs when the application is loading.
+        /// </summary>
+        private async void OnStartup(object sender, StartupEventArgs e)
         {
-            base.OnStartup(e);
+            await _host.StartAsync();
 
-            // Obtener la ventana principal desde el contenedor de servicios
-            var mainWindow = _serviceProvider.GetService<MainWindow>();
-            mainWindow.Show();
+        }
+
+        /// <summary>
+        /// Occurs when the application is closing.
+        /// </summary>
+        private async void OnExit(object sender, ExitEventArgs e)
+        {
+            await _host.StopAsync();
+
+            _host.Dispose();
+        }
+
+        /// <summary>
+        /// Occurs when an exception is thrown by an application but not handled.
+        /// </summary>
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            // For more info see https://docs.microsoft.com/en-us/dotnet/api/system.windows.application.dispatcherunhandledexception?view=windowsdesktop-6.0
         }
     }
-
 }

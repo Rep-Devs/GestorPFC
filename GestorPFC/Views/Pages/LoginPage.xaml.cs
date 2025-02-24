@@ -13,18 +13,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using Wpf.Ui.Abstractions.Controls;
 namespace GestorPFC.Views.Pages
 {
     /// <summary>
     /// Lógica de interacción para LoginView.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class LoginPage : Page, INavigableView<LoginViewModel>
     {
-        public LoginPage()
+        public LoginViewModel ViewModel { get; }
+        public LoginPage(LoginViewModel viewModel)
         {
+            ViewModel = viewModel;
+            DataContext = this;
+
             InitializeComponent();
-            DataContext = new LoginViewModel();
         }
+
+
     }
 }

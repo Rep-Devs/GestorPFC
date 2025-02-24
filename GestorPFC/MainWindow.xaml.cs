@@ -1,7 +1,5 @@
-﻿using GestorPFC.Views.Pages;
-using System.Text;
-
-using Wpf.Ui;
+﻿
+using GestorPFC.Views.Pages;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Controls;
 
@@ -24,6 +22,7 @@ namespace GestorPFC
             InitializeComponent();
 
             navigationService.SetNavigationControl(RootNavigation);
+
         }
 
         public INavigationView GetNavigation() => RootNavigation;
@@ -36,14 +35,15 @@ namespace GestorPFC
         public void CloseWindow() => Close();
 
 
-        public void SetPageService(IPageService pageService)
-        {
-            RootNavigation.SetPageService(pageService);
-        }
 
         public void SetServiceProvider(IServiceProvider serviceProvider)
         {
             throw new NotImplementedException();
+        }
+
+        public void SetPageService(IPageService pageService)
+        {
+            RootNavigation.SetPageService(pageService);
         }
 
         public void SetPageService(INavigationViewPageProvider navigationViewPageProvider)
