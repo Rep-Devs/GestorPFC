@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestorPFC.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,16 +13,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Wpf.Ui.Abstractions.Controls;
 
 namespace GestorPFC.Views.Pages
 {
     /// <summary>
-    /// Lógica de interacción para RegisterView.xaml
+    /// Lógica de interacción para LoginPage.xaml
     /// </summary>
-    public partial class RegisterView : Page
+    public partial class LoginPage : INavigableView<LoginViewModel>
     {
-        public RegisterView()
+        public LoginViewModel ViewModel { get; }
+
+        public LoginPage(LoginViewModel viewModel)
         {
+            ViewModel = viewModel;
+            DataContext = viewModel;
             InitializeComponent();
         }
     }
