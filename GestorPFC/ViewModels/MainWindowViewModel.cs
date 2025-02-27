@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace GestorPFC.ViewModels
 {
@@ -26,6 +27,20 @@ namespace GestorPFC.ViewModels
         {
 
             ApplicationTitle = "GestorPFC";
+
+            NavigationItems =
+[
+    new NavigationViewItem()
+            {
+                Content = "Home",
+
+            },
+            new NavigationViewItem()
+            {
+                Content = "Data",
+
+            },
+        ];
 
             _isInitialized = true;
         }

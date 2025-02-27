@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        xmlns:local="clr-namespace:GestorPFC"
+        xmlns:local="clr-namespace:GestorPFC.Views"
+        xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
         mc:Ignorable="d"
                  Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
@@ -25,21 +26,11 @@
             Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
             Grid.Row="0" />
         <ui:NavigationView x:Name="RootNavigation"
-                           Grid.Row="1"
-                           FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
-                           MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
+                   Grid.Row="1"
+                   FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
+                   MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
 
-                <ui:NavigationView.AutoSuggestBox>
-                    <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search">
-                        <ui:AutoSuggestBox.Icon>
-                            <ui:IconSourceElement>
-                                <ui:SymbolIconSource Symbol="Search24" />
-                            </ui:IconSourceElement>
-                        </ui:AutoSuggestBox.Icon>
-                    </ui:AutoSuggestBox>
-                </ui:NavigationView.AutoSuggestBox>
-
-                <ui:NavigationView.Header>
+            <ui:NavigationView.Header>
                     <ui:BreadcrumbBar
                     Margin="42,32,0,0"
                     FontSize="28"

@@ -8,6 +8,7 @@ using Wpf.Ui;
 using GestorPFC.ViewModels;
 using GestorPFC.Views.Pages;
 using GestorPFC.Services;
+using Wpf.Ui.Abstractions;
 
 namespace GestorPFC
 {
@@ -25,12 +26,14 @@ namespace GestorPFC
             })
             .ConfigureServices((context, services) =>
             {
-                _ = services.AddNavigationViewPageProvider();
+                _= services.AddNavigationViewPageProvider();
+
                 // App Host
                 _ = services.AddHostedService<ApplicationHostService>();
 
                 // Navigation service
                 _ = services.AddSingleton<INavigationService, NavigationService>();
+
 
                 // Main Window with Navigation
                 _ = services.AddSingleton<INavigationWindow, Views.MainWindow>();
@@ -42,7 +45,7 @@ namespace GestorPFC
 
                 // Pages
                 _ = services.AddSingleton<LoginPage>();
-                _ = services.AddSingleton<DashboardPage>();
+                _ = services.AddTransient<DashboardPage>();
 
                 // Configuration
                 _ = services.Configure<Utils.AppConfig>(context.Configuration.GetSection(nameof(Utils.AppConfig)));
@@ -52,7 +55,10 @@ namespace GestorPFC
         /// <summary>
         /// Gets the application's service provider.
         /// </summary>
-        public static IServiceProvider Services => _host.Services;
+        public static IServiceProvider Services
+        {
+            get { return _host.Services; }
+        }
 
         /// <summary>
         /// Occurs when the application starts.

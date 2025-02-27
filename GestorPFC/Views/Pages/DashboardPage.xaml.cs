@@ -24,17 +24,16 @@ namespace GestorPFC.Views.Pages
     {
         public DashboardViewModel ViewModel { get; }
 
+        public DashboardPage() { 
+            InitializeComponent();
+        }
+
         public DashboardPage(DashboardViewModel viewModel)
         {
             ViewModel = viewModel;
-            DataContext = viewModel;
-            InitializeComponent();
-            Loaded += Page_Loaded;
-        }
+            DataContext = this;
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.ViewModel.OnNavigatedFromAsync();
+            InitializeComponent();
         }
     }
 }

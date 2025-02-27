@@ -34,12 +34,12 @@ namespace GestorPFC.Services
         {
             await Task.CompletedTask;
 
-            if (!Application.Current.Windows.OfType<MainWindow>().Any())
+            if (!Application.Current.Windows.OfType<Views.MainWindow>().Any())
             {
                 _navigationWindow = (serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow)!;
                 _navigationWindow!.ShowWindow();
 
-                _ = _navigationWindow.Navigate(typeof(Views.Pages.LoginPage));
+                //_ = _navigationWindow.Navigate(typeof(Views.Pages.DashboardPage));
             }
 
             await Task.CompletedTask;

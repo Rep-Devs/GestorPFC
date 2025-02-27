@@ -9,5 +9,6 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid>
+        <ui:NavigationView x:Name="RootNavigation"></ui:NavigationView>
     </Grid>
 </Window>

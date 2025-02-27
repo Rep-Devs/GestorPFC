@@ -10,6 +10,7 @@ namespace GestorPFC.ViewModels
 {
     public class LoginViewModel : ViewModel
     {
+        /*
         private readonly INavigationService _navigationService;
 
         public LoginViewModel(INavigationService navigationService)
@@ -43,6 +44,7 @@ namespace GestorPFC.ViewModels
         {
             return email == "admin@correo.com" && password == "1234";
         }
+        */
     }
 }
 

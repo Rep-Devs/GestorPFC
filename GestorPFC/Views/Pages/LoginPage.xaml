@@ -6,13 +6,11 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:local="clr-namespace:GestorPFC.Views.Pages"
       mc:Ignorable="d"
-          d:DataContext="{d:DesignInstance local:LoginPage,
-                                     IsDesignTimeCreatable=False}"
+      d:DataContext="{d:DesignInstance local:LoginPage,  IsDesignTimeCreatable=False}"
       Title="Inicio de Sesión"
       d:DesignHeight="450"
       d:DesignWidth="800"
-      ui:Design.Background="White"
-      Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+      ui:Design.Background="White">
 
     <Grid>
         <Grid.RowDefinitions>
