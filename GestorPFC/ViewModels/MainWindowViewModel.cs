@@ -10,12 +10,6 @@ namespace GestorPFC.ViewModels
     public partial class MainWindowViewModel : ViewModel
     {
         private bool _isInitialized = false;
-        private object _currentView;
-        public object CurrentView
-        {
-            get => _currentView;
-            set => SetProperty(ref _currentView, value);
-        }
 
         private readonly INavigationService _navigationService;
 

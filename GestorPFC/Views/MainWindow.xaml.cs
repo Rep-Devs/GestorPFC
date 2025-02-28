@@ -19,11 +19,30 @@ namespace GestorPFC.Views
             navigationService.SetNavigationControl(RootNavigation);
 
 
-
+            SetPaneControl();
 
         }
 
+        public void SetPaneControl()
+        {
+            RootNavigation.Navigated += (s, e) =>
+            {
+                var currentPage = e.Page;
 
+                if (currentPage is LoginPage || currentPage is RegisterPage)
+                {
+                    RootNavigation.IsPaneVisible = false;
+                    RootNavigation.OpenPaneLength = 0;
+                    RootNavigation.CompactPaneLength = 0;
+
+                }
+                else
+                {
+                    RootNavigation.OpenPaneLength = 175;
+                    RootNavigation.CompactPaneLength = double.NaN;
+                }
+            };
+        }
 
         public INavigationView GetNavigation() => RootNavigation;
 

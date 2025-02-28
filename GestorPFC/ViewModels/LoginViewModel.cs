@@ -41,12 +41,13 @@ namespace GestorPFC.ViewModels
         }
         /*
         public ICommand LoginCommand { get; }
-
+        */
+        [RelayCommand]
         private void Login()
         {
             _navigationService.Navigate(typeof(DashboardPage));
         }
-        
+        /*
         private bool ValidarUsuario(string email, string password)
         {
             return email == "admin@correo.com" && password == "1234";
