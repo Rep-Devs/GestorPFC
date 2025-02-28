@@ -1,5 +1,4 @@
-﻿using GestorPFC.ViewModels;
-using Wpf.Ui.Abstractions.Controls;
+﻿
 
 namespace GestorPFC.Views.Pages
 {
@@ -9,7 +8,6 @@ namespace GestorPFC.Views.Pages
     public partial class LoginPage : INavigableView<LoginViewModel>
     {
         public LoginViewModel ViewModel { get; }
-        public LoginPage() { }
         public LoginPage(LoginViewModel viewModel)
         {
             ViewModel = viewModel;

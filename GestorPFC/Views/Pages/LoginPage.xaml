@@ -6,7 +6,7 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:local="clr-namespace:GestorPFC.Views.Pages"
       mc:Ignorable="d"
-      d:DataContext="{d:DesignInstance local:LoginPage,  IsDesignTimeCreatable=False}"
+      d:DataContext="{d:DesignInstance local:LoginPage,  IsDesignTimeCreatable=True}"
       Title="Inicio de Sesión"
       d:DesignHeight="450"
       d:DesignWidth="800"
@@ -20,32 +20,34 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="1" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="Inicio de Sesión" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock Text="Inicio de Sesión" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="20"/>
 
-            <!-- Campo de Correo -->
             <ui:TextBox PlaceholderText="Correo electrónico"
-                        Text="{Binding Correo, UpdateSourceTrigger=PropertyChanged}"
-                        Height="40">
+                Height="40">
                 <ui:TextBox.Icon>
                     <ui:SymbolIcon Symbol="Mail24"/>
                 </ui:TextBox.Icon>
             </ui:TextBox>
 
-            <!-- Campo de Contraseña -->
             <ui:PasswordBox PlaceholderText="Contraseña"
-                            Password="{Binding Contraseña, Mode=TwoWay}"
-                            Height="40">
+                    Height="40">
                 <ui:PasswordBox.Icon>
                     <ui:SymbolIcon Symbol="Key24"/>
                 </ui:PasswordBox.Icon>
             </ui:PasswordBox>
 
-            <!-- Botón de Inicio de Sesión -->
             <ui:Button Content="Iniciar Sesión"
-                       Command="{Binding LoginCommand}"
-                       Height="45"
-                       HorizontalAlignment="Center"
-                       Appearance="Primary"/>
+               Height="45"
+               HorizontalAlignment="Center"
+               Appearance="Primary"/>
+
+            <!-- Botón para ir al registro -->
+            <ui:Button Content="¿No tienes cuenta? Regístrate"
+               Command="{Binding ViewModel.NavigateToRegisterCommand, Mode=OneWay}"
+               Height="40"
+               HorizontalAlignment="Center"
+               Appearance="Light"/>
         </StackPanel>
+
     </Grid>
 </Page>

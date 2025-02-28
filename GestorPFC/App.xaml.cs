@@ -42,10 +42,12 @@ namespace GestorPFC
                 // ViewModels
                 _ = services.AddSingleton<LoginViewModel>();
                 _ = services.AddSingleton<DashboardViewModel>();
+                _ = services.AddSingleton<RegisterViewModel>();
 
-                // Pages
+                // Views
                 _ = services.AddSingleton<LoginPage>();
                 _ = services.AddTransient<DashboardPage>();
+                _ = services.AddSingleton<RegisterPage>();
 
                 // Configuration
                 _ = services.Configure<Utils.AppConfig>(context.Configuration.GetSection(nameof(Utils.AppConfig)));

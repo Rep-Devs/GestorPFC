@@ -7,6 +7,8 @@
         xmlns:local="clr-namespace:GestorPFC.Views"
         xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
         mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:MainWindow,
+                                     IsDesignTimeCreatable=True}"
         Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
         Height="600" Width="900"
