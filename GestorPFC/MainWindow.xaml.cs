@@ -10,7 +10,7 @@ namespace GestorPFC
     {
         public MainWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
     }
 }

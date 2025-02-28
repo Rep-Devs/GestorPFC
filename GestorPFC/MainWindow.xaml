@@ -1,14 +1,42 @@
-﻿<Window x:Class="GestorPFC.MainWindow"
+﻿<ui:FluentWindow x:Class="GestorPFC2.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        xmlns:local="clr-namespace:GestorPFC"
+        xmlns:local="clr-namespace:GestorPFC2.Views"
+        xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+        WindowStartupLocation="CenterScreen"
+        Height="600" Width="900"
+        WindowStyle="SingleBorderWindow"
+        ExtendsContentIntoTitleBar="True"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round">
 
     <Grid>
-        <ui:NavigationView x:Name="RootNavigation"></ui:NavigationView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <ui:TitleBar
+            Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+            Grid.Row="0" />
+        <ui:NavigationView x:Name="RootNavigation"
+                   Grid.Row="1"
+                   Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
+                   MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
+
+            <ui:NavigationView.Header>
+                <ui:BreadcrumbBar
+                    Margin="42,32,0,0"
+                    FontSize="28"
+                    FontWeight="DemiBold" />
+            </ui:NavigationView.Header>
+        </ui:NavigationView>
     </Grid>
-</Window>
+</ui:FluentWindow>

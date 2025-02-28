@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:GestorPFC.Views"
         xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
         mc:Ignorable="d"
-                 Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+        Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
         Height="600" Width="900"
         WindowStyle="SingleBorderWindow"
@@ -30,12 +30,6 @@
                    FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
                    MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
 
-            <ui:NavigationView.Header>
-                    <ui:BreadcrumbBar
-                    Margin="42,32,0,0"
-                    FontSize="28"
-                    FontWeight="DemiBold" />
-                </ui:NavigationView.Header>
             </ui:NavigationView>
     </Grid>
 </ui:FluentWindow>

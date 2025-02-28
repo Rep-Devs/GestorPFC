@@ -44,6 +44,7 @@
             <ui:Button Content="Iniciar Sesión"
                        Command="{Binding LoginCommand}"
                        Height="45"
+                       HorizontalAlignment="Center"
                        Appearance="Primary"/>
         </StackPanel>
     </Grid>

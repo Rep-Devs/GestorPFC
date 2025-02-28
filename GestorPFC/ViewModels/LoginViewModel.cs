@@ -10,9 +10,11 @@ namespace GestorPFC.ViewModels
 {
     public class LoginViewModel : ViewModel
     {
-        /*
+        
         private readonly INavigationService _navigationService;
 
+        
+        /*
         public LoginViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
@@ -32,14 +34,14 @@ namespace GestorPFC.ViewModels
             get => _contraseña;
             set => SetProperty(ref _contraseña, value);
         }
-
+        
         public ICommand LoginCommand { get; }
 
         private void Login()
         {
             _navigationService.Navigate(typeof(DashboardPage));
         }
-
+        /*
         private bool ValidarUsuario(string email, string password)
         {
             return email == "admin@correo.com" && password == "1234";

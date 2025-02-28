@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestorPFC", "GestorPFC.csproj", "{7D48CEBB-F1CA-439B-81B0-3458D0B254DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GestorPFC", "GestorPFC.csproj", "{7D48CEBB-F1CA-439B-81B0-3458D0B254DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestorPFC_API", "..\GestorPFC_API\GestorPFC_API.csproj", "{9BF423D7-BDB8-4838-91CE-E4DA6CF1A891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GestorPFC_API", "..\GestorPFC_API\GestorPFC_API.csproj", "{9BF423D7-BDB8-4838-91CE-E4DA6CF1A891}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

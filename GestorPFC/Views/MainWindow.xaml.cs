@@ -1,14 +1,15 @@
 ﻿
+using GestorPFC.ViewModels;
+using GestorPFC.Views.Pages;
 using Wpf.Ui;
-using Wpf.Ui.Abstractions;
 using Wpf.Ui.Controls;
 
 namespace GestorPFC.Views
 {
     public partial class MainWindow : INavigationWindow
     {
-        public ViewModels.MainWindowViewModel ViewModel { get; }
-        public MainWindow(ViewModels.MainWindowViewModel viewModel, INavigationService navigationService)
+        public MainWindowViewModel ViewModel { get; }
+        public MainWindow(MainWindowViewModel viewModel, INavigationService navigationService)
         {
             ViewModel = viewModel;
             DataContext = this;
@@ -18,8 +19,9 @@ namespace GestorPFC.Views
             navigationService.SetNavigationControl(RootNavigation);
 
 
-        }
 
+
+        }
 
 
 
@@ -43,11 +45,6 @@ namespace GestorPFC.Views
 
         public void SetPageService(IPageService pageService)
         {
-            if (RootNavigation == null)
-            {
-                System.Windows.MessageBox.Show("RootNavigation es NULL en SetPageService 🚨");
-                return;
-            }
 
             RootNavigation.SetPageService(pageService);
         }
