@@ -45,19 +45,19 @@ namespace GestorPFC.ViewModels
                 {
                     Content = "Propuestas",
                     Icon = new SymbolIcon { Symbol = SymbolRegular.Add16 },
-                    //TargetPageType = typeof(Views.Pages.ProfilePage)
+                    TargetPageType = typeof(Views.Pages.ProposalPage)
                 },
                 new NavigationViewItem()
                 {
                     Content = "Proyectos",
                     Icon = new SymbolIcon { Symbol = SymbolRegular.Album20 },
-                    //TargetPageType = typeof(Views.Pages.ProfilePage)
+                    TargetPageType = typeof(Views.Pages.ProjectPage)
                 },
                 new NavigationViewItem()
                 {
                     Content = "Calendario",
                     Icon = new SymbolIcon { Symbol = SymbolRegular.CalendarDay24 },
-                    //TargetPageType = typeof(Views.Pages.ProfilePage)
+                    TargetPageType = typeof(Views.Pages.CalendarPage)
                 },
             ];
 

@@ -40,13 +40,15 @@ namespace GestorPFC
                 _ = services.AddSingleton<INavigationWindow, Views.MainWindow>();
                 _ = services.AddSingleton<MainViewModel>();
 
+
                 // ViewModels
                 _ = services.AddSingleton<LoginViewModel>();
                 _ = services.AddSingleton<DashboardViewModel>();
                 _ = services.AddSingleton<RegisterViewModel>();
                 _ = services.AddSingleton<ProfileViewModel>();
-
-
+                _ = services.AddSingleton<CalendarViewModel>();
+                _ = services.AddSingleton<ProjectViewModel>();
+                _ = services.AddSingleton<ProposalViewModel>();
 
 
                 // Views
@@ -54,6 +56,9 @@ namespace GestorPFC
                 _ = services.AddSingleton<DashboardPage>();
                 _ = services.AddSingleton<RegisterPage>();
                 _ = services.AddSingleton<ProfilePage>();
+                _ = services.AddSingleton<CalendarPage>();
+                _ = services.AddSingleton<ProposalPage>();
+                _ = services.AddSingleton<ProjectPage>();
 
                 //_ = services.AddSingleton<Views.SplashScreen>();
 

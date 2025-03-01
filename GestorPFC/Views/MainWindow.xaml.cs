@@ -1,13 +1,17 @@
 ﻿
 using GestorPFC.ViewModels;
 using GestorPFC.Views.Pages;
+using System.Windows.Media;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 
 namespace GestorPFC.Views
 {
+
+
     public partial class MainWindow : INavigationWindow
     {
+
         public MainViewModel ViewModel { get; }
         public MainWindow(MainViewModel viewModel, INavigationService navigationService)
         {
@@ -18,7 +22,6 @@ namespace GestorPFC.Views
 
             navigationService.SetNavigationControl(RootNavigation);
 
-            
             SetPaneControl();
             
         }
@@ -41,6 +44,7 @@ namespace GestorPFC.Views
                 }
                 else
                 {
+
                     RootNavigation.OpenPaneLength = 175;
                     RootNavigation.CompactPaneLength = double.NaN;
                 }
