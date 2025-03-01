@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:local="clr-namespace:GestorPFC.Views.Pages"
+      d:DataContext="{d:DesignInstance local:RegisterPage,  IsDesignTimeCreatable=True}"
       mc:Ignorable="d"
       Title="Registro"
       d:DesignHeight="450"
@@ -53,7 +54,7 @@
 
             <!-- Botón para volver al Login -->
             <ui:Button Content="¿Ya tienes cuenta? Inicia sesión"
-                       Command="{Binding NavigateToLoginCommand}"
+                       Command="{Binding ViewModel.NavigateToLoginCommand, Mode=OneWay}"
                        Height="40"
                        HorizontalAlignment="Center"
                        Appearance="Light"/>

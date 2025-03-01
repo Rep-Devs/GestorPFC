@@ -8,25 +8,28 @@ namespace GestorPFC.Views
 {
     public partial class MainWindow : INavigationWindow
     {
-        public MainWindowViewModel ViewModel { get; }
-        public MainWindow(MainWindowViewModel viewModel, INavigationService navigationService)
+        public MainViewModel ViewModel { get; }
+        public MainWindow(MainViewModel viewModel, INavigationService navigationService)
         {
             ViewModel = viewModel;
-            DataContext = this;
+            DataContext = viewModel;
 
             InitializeComponent();
 
             navigationService.SetNavigationControl(RootNavigation);
 
-
+            
             SetPaneControl();
-
+            
         }
 
         public void SetPaneControl()
         {
-            RootNavigation.Navigated += (s, e) =>
+
+            RootNavigation.Navigated += async (s, e) =>
             {
+                
+                
                 var currentPage = e.Page;
 
                 if (currentPage is LoginPage || currentPage is RegisterPage)
@@ -43,6 +46,7 @@ namespace GestorPFC.Views
                 }
             };
         }
+
 
         public INavigationView GetNavigation() => RootNavigation;
 

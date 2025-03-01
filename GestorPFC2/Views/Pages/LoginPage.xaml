@@ -1,18 +1,15 @@
-﻿<Page x:Class="GestorPFC.Views.Pages.LoginPage"
+﻿<Page x:Class="GestorPFC2.Views.Pages.LoginPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-      xmlns:local="clr-namespace:GestorPFC.Views.Pages"
+      xmlns:local="clr-namespace:GestorPFC2.Views"
       mc:Ignorable="d"
-      d:DataContext="{d:DesignInstance local:LoginPage,  IsDesignTimeCreatable=True}"
       Title="Inicio de Sesión"
       d:DesignHeight="450"
       d:DesignWidth="800"
       ui:Design.Background="White">
-    
-
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,38 +17,33 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <StackPanel Grid.Row="1" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center">
-            
-            <TextBlock Text="Inicio de Sesión" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="20"/>
 
+        <StackPanel Grid.Row="1" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Inicio de Sesión" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+
+            <!-- Campo de Correo -->
             <ui:TextBox PlaceholderText="Correo electrónico"
-                Height="40">
+                        Text="{Binding Correo, UpdateSourceTrigger=PropertyChanged}"
+                        Height="40">
                 <ui:TextBox.Icon>
                     <ui:SymbolIcon Symbol="Mail24"/>
                 </ui:TextBox.Icon>
             </ui:TextBox>
 
+            <!-- Campo de Contraseña -->
             <ui:PasswordBox PlaceholderText="Contraseña"
-                    Height="40">
+                            Password="{Binding Contraseña, Mode=TwoWay}"
+                            Height="40">
                 <ui:PasswordBox.Icon>
                     <ui:SymbolIcon Symbol="Key24"/>
                 </ui:PasswordBox.Icon>
             </ui:PasswordBox>
 
+            <!-- Botón de Inicio de Sesión -->
             <ui:Button Content="Iniciar Sesión"
-               Command="{Binding ViewModel.LoginCommand, Mode=OneWay}"
-               Height="45"
-               HorizontalAlignment="Center"
-               Appearance="Primary"/>
-
-            <!-- Botón para ir al registro -->
-            <ui:Button Content="¿No tienes cuenta? Regístrate"
-               Command="{Binding ViewModel.NavigateToRegisterCommand, Mode=OneWay}"
-               Height="40"
-               HorizontalAlignment="Center"
-               Appearance="Light"/>
+                       Command="{Binding LoginCommand}"
+                       Height="45"
+                       Appearance="Primary"/>
         </StackPanel>
-
     </Grid>
 </Page>

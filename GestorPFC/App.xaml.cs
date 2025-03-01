@@ -9,6 +9,7 @@ using GestorPFC.ViewModels;
 using GestorPFC.Views.Pages;
 using GestorPFC.Services;
 using Wpf.Ui.Abstractions;
+using GestorPFC.Views;
 
 namespace GestorPFC
 {
@@ -37,17 +38,25 @@ namespace GestorPFC
 
                 // Main Window with Navigation
                 _ = services.AddSingleton<INavigationWindow, Views.MainWindow>();
-                _ = services.AddSingleton<MainWindowViewModel>();
+                _ = services.AddSingleton<MainViewModel>();
 
                 // ViewModels
                 _ = services.AddSingleton<LoginViewModel>();
                 _ = services.AddSingleton<DashboardViewModel>();
                 _ = services.AddSingleton<RegisterViewModel>();
+                _ = services.AddSingleton<ProfileViewModel>();
+
+
+
 
                 // Views
                 _ = services.AddSingleton<LoginPage>();
-                _ = services.AddTransient<DashboardPage>();
+                _ = services.AddSingleton<DashboardPage>();
                 _ = services.AddSingleton<RegisterPage>();
+                _ = services.AddSingleton<ProfilePage>();
+
+                //_ = services.AddSingleton<Views.SplashScreen>();
+
 
                 // Configuration
                 _ = services.Configure<Utils.AppConfig>(context.Configuration.GetSection(nameof(Utils.AppConfig)));
@@ -67,9 +76,10 @@ namespace GestorPFC
         /// </summary>
         private async void OnStartup(object sender, StartupEventArgs e)
         {
-            await _host.StartAsync();
 
+            await _host.StartAsync();
         }
+
 
         /// <summary>
         /// Occurs when the application exits.

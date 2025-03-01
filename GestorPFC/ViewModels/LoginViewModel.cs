@@ -12,9 +12,11 @@ namespace GestorPFC.ViewModels
     public partial class LoginViewModel : ViewModel
     {
             private readonly INavigationService _navigationService;
-
+            
+            
             public LoginViewModel(INavigationService navigationService)
             {
+                
                 _navigationService = navigationService;
             }
 
