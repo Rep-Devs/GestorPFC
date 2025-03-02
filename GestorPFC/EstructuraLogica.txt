@@ -1,0 +1,128 @@
+﻿project:
+  name: "Sistema de Gestión de Proyectos Final"
+  description: >
+    La aplicación consiste en crear una solución utilizando:
+      - WPF para la vista con MVVM.
+      - API REST desarrollada con ASP.NET Core.
+      - Entity Framework Core con Code First para el acceso a datos.
+    La aplicación incluirá funcionalidades de Login/Registro y permitirá realizar operaciones CRUD sobre las entidades del sistema.
+  architecture:
+    - Frontend: Aplicación WPF que implementa MVVM y consume el API REST.
+    - Backend: API REST con ASP.NET Core, EF Core (Code First) y JWT para la autenticación.
+    - Base de Datos: SQL Server gestionada mediante migraciones de EF Core.
+  entities:
+    - Usuario:
+        description: "Gestiona la autenticación y el registro. Campos: id_usuario, correo, contraseñaHash, rol (Alumno, Profesor, Administrador). Se relaciona opcionalmente con Alumno o Profesor según el rol."
+    - Curso:
+        description: "Representa un curso. Campos: id_curso, nombre, colecciones de Alumnos y Profesores, Departamento y Tutor asignado (Profesor)."
+    - Alumno:
+        description: "Contiene: id_alumno, nombre, apellidos, correo y referencia al Curso al que pertenece."
+    - Profesor:
+        description: "Contiene: id_profesor, nombre, apellido, correo, Departamento y colecciones de Cursos en los que participa."
+    - Departamento:
+        description: "Contiene: id_departamento, nombre y la colección de Profesores que pertenecen al departamento."
+    - Propuesta:
+        description: >
+          Representa la solicitud enviada por un alumno para desarrollar su proyecto final. 
+          Campos: id_propuesta, titulo, descripción, fecha_envio (automática), fecha_gestion (cuando se gestiona), 
+          estado (StandBy, Aceptada, Denegada), departamento (según el curso del alumno) y boolean_proyecto 
+          (indica si se debe crear el proyecto).
+    - Proyecto:
+        description: >
+          Se crea a partir de una propuesta aprobada y con el flag boolean_proyecto en true.
+          Campos: id_proyecto, titulo, descripción, fecha_entrega, estado_proyecto (Desarrollo, Aprobado, Suspendido, Revision),
+          Departamento, colección de fechas para tutorías y tutor_proyecto (Profesor asignado).
+
+issues:
+  - title: "Issue 1: Configuración Inicial del Repositorio y Solución"
+    description: >
+      Crear el repositorio en GitHub y configurar la solución en Visual Studio 2022.
+      Se deben generar los proyectos necesarios:
+        - API REST (Backend)
+        - Aplicación WPF (Frontend)
+        - Biblioteca de Dominio/Entidades (opcional para reutilización)
+    assigned_to: "Santiago & Tú"
+    
+  - title: "Issue 2: Definición del Modelo de Datos y Migraciones"
+    description: >
+      Implementar las clases: Usuario, Curso, Alumno, Profesor, Departamento, Propuesta y Proyecto según el modelo.
+      Configurar Entity Framework Core con Code First y generar la migración inicial (InitialCreate).
+    assigned_to: "Santiago"
+    
+  - title: "Issue 3: Configuración del API REST"
+    description: >
+      Configurar el API REST usando ASP.NET Core.
+      Crear controladores básicos para exponer endpoints y establecer la comunicación con el frontend.
+    assigned_to: "Tú"
+    
+  - title: "Issue 4: Implementación del Sistema de Autenticación y Registro"
+    description: >
+      Desarrollar el módulo de autenticación:
+        - Crear endpoints para Login y Registro.
+        - Implementar JWT para gestionar la autenticación.
+        - Integrar la clase Usuario para asignar roles y relaciones con Alumno o Profesor.
+    assigned_to: "Tú"
+    
+  - title: "Issue 5: CRUD de Propuestas"
+    description: >
+      Desarrollar los endpoints CRUD para gestionar Propuestas.
+      Incluir lógica para:
+        - Envío de propuesta por alumno.
+        - Gestión (aceptación, denegación, standby) por parte de profesores/tutores.
+        - Conversión a Proyecto cuando boolean_proyecto pase a true.
+    assigned_to: "Santiago"
+    
+  - title: "Issue 6: CRUD de Proyectos y Gestión de Tutorías"
+    description: >
+      Desarrollar los endpoints CRUD para Proyectos.
+      Permitir la asignación de tutor (Profesor) y la gestión de fechas de entrega y tutorías.
+      Incluir validaciones para impedir modificaciones una vez pasada la fecha asignada.
+    assigned_to: "Tú"
+    
+  - title: "Issue 7: Implementación del Cliente WPF - Vistas Alumno"
+    description: >
+      Crear vistas para el alumno utilizando MVVM en WPF.
+      Vistas requeridas:
+        - Propuestas: Visualización y envío.
+        - Proyectos: Listado de proyectos creados.
+        - Calendario: Eventos de tutorías, entregas y defensas.
+        - Perfil: Información personal y configuración (cambio de contraseña, foto, tema).
+    assigned_to: "Tú"
+    
+  - title: "Issue 8: Implementación del Cliente WPF - Vistas Profesor"
+    description: >
+      Crear vistas para profesores en WPF.
+      Vistas requeridas:
+        - Propuestas: Gestión de propuestas del departamento y opción de crear propuestas para alumnos sin proyecto.
+        - Proyectos: Listado de proyectos del departamento y asignados.
+        - Calendario: Eventos relacionados con tutorías, entregas y defensas.
+        - Perfil: Información personal y opciones de configuración.
+    assigned_to: "Santiago"
+    
+  - title: "Issue 9: Implementación del Cliente WPF - Vistas Administrador"
+    description: >
+      Crear vistas en WPF para el administrador.
+      Vistas requeridas:
+        - Propuestas: CRUD completo.
+        - Proyectos: CRUD completo.
+        - Gestión de Usuarios: CRUD para usuarios.
+        - Perfil: Información personal y configuración.
+    assigned_to: "Santiago & Tú"
+    
+  - title: "Issue 10: Integración API REST y Cliente WPF"
+    description: >
+      Desarrollar servicios en la aplicación WPF que consuman los endpoints del API REST usando HttpClient.
+      Gestionar el token JWT para la autenticación en cada petición y manejar errores de conexión.
+    assigned_to: "Santiago"
+    
+  - title: "Issue 11: Pruebas Unitarias e Integración"
+    description: >
+      Implementar pruebas unitarias para la lógica de negocio y pruebas de integración para el API REST y el cliente WPF.
+      Validar la correcta conversión de propuestas a proyectos y la seguridad de la autenticación.
+    assigned_to: "Santiago & Tú"
+    
+  - title: "Issue 12: Documentación y Despliegue"
+    description: >
+      Documentar la arquitectura del sistema, flujo de trabajo, y cada módulo.
+      Preparar la aplicación para despliegue en un entorno de prueba.
+    assigned_to: "Santiago & Tú"
