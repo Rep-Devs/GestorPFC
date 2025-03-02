@@ -9,8 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="Resources\**" />
+    <None Remove="Resources\**" />
+    <Page Remove="Resources\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\logo.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="DTOs\" />
-    <Folder Include="Resources\" />
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
@@ -22,6 +32,10 @@
 		<PackageReference Include="WPF-UI.DependencyInjection" Version="4.0.0-rc.3" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\logo.jpg" />
 	</ItemGroup>
 
 </Project>

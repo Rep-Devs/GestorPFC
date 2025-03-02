@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GestorPFC.Views;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,14 @@ namespace GestorPFC.Services
 
         private async Task HandleActivationAsync()
         {
+
             await Task.CompletedTask;
+
 
             if (!Application.Current.Windows.OfType<Views.MainWindow>().Any())
             {
+
+
                 _navigationWindow = (serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow)!;
                 _navigationWindow!.ShowWindow();
 

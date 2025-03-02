@@ -12,9 +12,11 @@ namespace GestorPFC.ViewModels
     public partial class LoginViewModel : ViewModel
     {
             private readonly INavigationService _navigationService;
-
+            
+            
             public LoginViewModel(INavigationService navigationService)
             {
+                
                 _navigationService = navigationService;
             }
 
@@ -41,12 +43,13 @@ namespace GestorPFC.ViewModels
         }
         /*
         public ICommand LoginCommand { get; }
-
+        */
+        [RelayCommand]
         private void Login()
         {
             _navigationService.Navigate(typeof(DashboardPage));
         }
-        
+        /*
         private bool ValidarUsuario(string email, string password)
         {
             return email == "admin@correo.com" && password == "1234";

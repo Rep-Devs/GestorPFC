@@ -1,5 +1,4 @@
 ﻿
-
 namespace GestorPFC.Views.Pages
 {
     /// <summary>
@@ -12,6 +11,7 @@ namespace GestorPFC.Views.Pages
         {
             ViewModel = viewModel;
             DataContext = this;
+
             InitializeComponent();
         }
     }

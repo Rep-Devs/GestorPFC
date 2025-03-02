@@ -11,6 +11,8 @@
       d:DesignHeight="450"
       d:DesignWidth="800"
       ui:Design.Background="White">
+    
+
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,8 +20,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
+        
         <StackPanel Grid.Row="1" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center">
+            
             <TextBlock Text="Inicio de Sesión" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="20"/>
 
             <ui:TextBox PlaceholderText="Correo electrónico"
@@ -37,6 +40,7 @@
             </ui:PasswordBox>
 
             <ui:Button Content="Iniciar Sesión"
+               Command="{Binding ViewModel.LoginCommand, Mode=OneWay}"
                Height="45"
                HorizontalAlignment="Center"
                Appearance="Primary"/>

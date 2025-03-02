@@ -7,30 +7,32 @@
         xmlns:local="clr-namespace:GestorPFC.Views"
         xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
         mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:MainWindow,
+        d:DataContext="{d:DesignInstance local:MainWindow,
                                      IsDesignTimeCreatable=True}"
-        Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+        Title="{Binding ApplicationTitle, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
         Height="600" Width="900"
         WindowStyle="SingleBorderWindow"
         ExtendsContentIntoTitleBar="True"
-    WindowBackdropType="Mica"
-    WindowCornerPreference="Round">
-
+        WindowBackdropType="Mica"
+        WindowCornerPreference="Round"
+        >
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <!-- Title Bar -->
         <ui:TitleBar
-            Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
-            Grid.Row="0" />
+            
+            Title="{Binding ApplicationTitle, Mode=OneWay}"
+            Grid.Row="0" FontSize="20" FontFamily="Impact" />
         <ui:NavigationView x:Name="RootNavigation"
                    Grid.Row="1"
-                   FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
-                   MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
+                   Visibility="{Binding NavigationVisibility}"
+                   FooterMenuItemsSource="{Binding NavigationFooter, Mode=OneWay}"
+                   MenuItemsSource="{Binding NavigationItems, Mode=OneWay}">
 
             </ui:NavigationView>
     </Grid>
