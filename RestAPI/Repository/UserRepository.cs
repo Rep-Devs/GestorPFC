@@ -11,6 +11,7 @@ using RestAPI.Data;
 using RestAPI.Models.DTOs.UserDTO;
 using RestAPI.Models.Entity;
 using RestAPI.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestAPI.Repository
 {
@@ -81,6 +82,33 @@ namespace RestAPI.Repository
 
         public async Task<UserLoginResponseDTO> Register(UserRegistrationDTO userRegistrationDto)
         {
+            // Determinar el rol a asignar según el email
+            string roleToAssign = string.Empty;
+
+            // Buscar asíncronamente en la tabla de Alumnos
+            var alumno = await _context.Alumnos
+                                       .FirstOrDefaultAsync(a => a.Email.ToLower() == userRegistrationDto.Email.ToLower());
+            if (alumno != null)
+            {
+                roleToAssign = "alumno";
+            }
+            else
+            {
+                // Si no es alumno, buscar en la tabla de Profesores
+                var profesor = await _context.Profesores
+                                             .FirstOrDefaultAsync(p => p.Email.ToLower() == userRegistrationDto.Email.ToLower());
+                if (profesor != null)
+                {
+                    roleToAssign = "profesor";
+                }
+                else
+                {
+                    // Si el email no corresponde a ninguno, se rechaza el registro
+                    throw new Exception("El email no corresponde a ningún alumno o profesor.");
+                }
+            }
+
+            // Crear el usuario a partir de los datos del DTO
             AppUser user = new AppUser()
             {
                 UserName = userRegistrationDto.UserName,
@@ -89,27 +117,39 @@ namespace RestAPI.Repository
                 NormalizedEmail = userRegistrationDto.Email.ToUpper()
             };
 
+            // Crear el usuario en Identity
             var result = await _userManager.CreateAsync(user, userRegistrationDto.Password);
             if (!result.Succeeded)
             {
-                return null!;
+                // Puedes retornar un objeto de error o lanzar una excepción según prefieras
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new Exception($"Error al crear el usuario: {errors}");
             }
 
+            // Asegurarse de que existan los roles básicos
             if (!await _roleManager.RoleExistsAsync("admin"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("admin"));
-                await _roleManager.CreateAsync(new IdentityRole("register"));
+            }
+            if (!await _roleManager.RoleExistsAsync("alumno"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("alumno"));
+            }
+            if (!await _roleManager.RoleExistsAsync("profesor"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("profesor"));
             }
 
-            await _userManager.AddToRoleAsync(user, userRegistrationDto.Role);
+            // Asignar el rol determinado al usuario
+            await _userManager.AddToRoleAsync(user, roleToAssign);
 
-            AppUser? newUser = _context.Users.FirstOrDefault(u => u.UserName == userRegistrationDto.UserName);
-
+            // Retornar la respuesta (sin token, que se puede generar en el login)
             return new UserLoginResponseDTO
             {
-                User = newUser,
-                Token = ""
+                User = user,
+                Token = string.Empty
             };
         }
+
     }
 }
