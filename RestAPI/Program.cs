@@ -103,51 +103,12 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
+// Crear un scope para ejecutar la semilla.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await SeedAdminUserAsync(services);
-}
-
-async Task SeedAdminUserAsync(IServiceProvider serviceProvider)
-{
-    var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    // Obtener credenciales desde variables de entorno o configuración segura
-    string adminRole = "admin";
-    string adminUserName = builder.Configuration["AdminCredentials:UserName"] ?? "admin";
-    string adminEmail = builder.Configuration["AdminCredentials:Email"] ?? "admin@example.com";
-    string adminPassword = builder.Configuration["AdminCredentials:Password"] ?? throw new Exception("La contraseña del administrador no está configurada.");
-
-    // Crear el rol de administrador si no existe
-    if (!await roleManager.RoleExistsAsync(adminRole))
-    {
-        await roleManager.CreateAsync(new IdentityRole(adminRole));
-    }
-
-    // Verificar si el usuario administrador ya existe
-    var adminUser = await userManager.FindByNameAsync(adminUserName);
-    if (adminUser == null)
-    {
-        adminUser = new AppUser
-        {
-            UserName = adminUserName,
-            Email = adminEmail,
-            Name = "Administrador"
-        };
-
-        var result = await userManager.CreateAsync(adminUser, adminPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, adminRole);
-        }
-        else
-        {
-            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            throw new Exception($"Error al crear el usuario admin: {errors}");
-        }
-    }
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    await DbInitializer.SeedAsync(context, services);
 }
 
 // Configurar el pipeline HTTP
