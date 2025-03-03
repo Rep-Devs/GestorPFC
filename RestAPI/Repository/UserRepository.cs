@@ -22,7 +22,7 @@ namespace RestAPI.Repository
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private readonly int TokenExpirationMinutes = 7; // Ajustable según necesidad
+        private readonly int TokenExpirationMinutes = 30; // Ajustable según necesidad
 
         public UserRepository(ApplicationDbContext context, IConfiguration config,
             UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
