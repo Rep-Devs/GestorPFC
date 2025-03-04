@@ -7,9 +7,23 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProjectPage"
-      Background="Black">
+      Background="White">
 
     <Grid>
-        
+        <ListView ItemsSource="{Binding Proyectos}" SelectedItem="{Binding ProyectoSeleccionado}" 
+                  Background="White" Foreground="Black" Margin="10">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ViewModel.Titulo}" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding ViewModel.Descripcion}" FontSize="14"/>
+                            <TextBlock Text="{Binding ViewModel.FechaEntrega, StringFormat='Fecha Entrega: {0:dd/MM/yyyy}'}" FontSize="12"/>
+                            <TextBlock Text="{Binding ViewModel.EstadoProyecto}" FontSize="12" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

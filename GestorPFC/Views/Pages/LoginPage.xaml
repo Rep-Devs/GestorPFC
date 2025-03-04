@@ -25,14 +25,16 @@
             
             <TextBlock Text="Inicio de Sesión" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="20"/>
 
-            <ui:TextBox PlaceholderText="Correo electrónico"
-                Height="40">
+            <ui:TextBox PlaceholderText="Nombre de usuario" x:Name="UserNameText"
+                        Text="{Binding ViewModel.Username, UpdateSourceTrigger=PropertyChanged}"
+                Height="40" Cursor="IBeam">
                 <ui:TextBox.Icon>
                     <ui:SymbolIcon Symbol="Mail24"/>
                 </ui:TextBox.Icon>
             </ui:TextBox>
 
-            <ui:PasswordBox PlaceholderText="Contraseña"
+            <ui:PasswordBox PlaceholderText="Contraseña" x:Name="PasswordText"
+                            Password="{Binding ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Height="40">
                 <ui:PasswordBox.Icon>
                     <ui:SymbolIcon Symbol="Key24"/>
@@ -40,7 +42,7 @@
             </ui:PasswordBox>
 
             <ui:Button Content="Iniciar Sesión"
-               Command="{Binding ViewModel.LoginCommand, Mode=OneWay}"
+               Command="{Binding ViewModel.CheckLoginCommand, Mode=OneWay}"
                Height="45"
                HorizontalAlignment="Center"
                Appearance="Primary"/>

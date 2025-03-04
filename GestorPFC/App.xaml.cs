@@ -10,6 +10,7 @@ using GestorPFC.Views.Pages;
 using GestorPFC.Services;
 using Wpf.Ui.Abstractions;
 using GestorPFC.Views;
+using System.Net.Http;
 
 namespace GestorPFC
 {
@@ -28,6 +29,10 @@ namespace GestorPFC
             .ConfigureServices((context, services) =>
             {
                 _= services.AddNavigationViewPageProvider();
+
+                // API Service
+                services.AddSingleton(new HttpClient { BaseAddress = new Uri("https://localhost:7060/") });
+
 
                 // App Host
                 _ = services.AddHostedService<ApplicationHostService>();

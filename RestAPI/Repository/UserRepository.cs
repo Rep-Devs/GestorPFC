@@ -115,6 +115,7 @@ namespace RestAPI.Repository
                 Name = userRegistrationDto.Name,
                 Email = userRegistrationDto.Email,
                 NormalizedEmail = userRegistrationDto.Email.ToUpper()
+
             };
 
             // Crear el usuario en Identity
