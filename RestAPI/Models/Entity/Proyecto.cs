@@ -21,7 +21,7 @@
         public Departamento Departamento { get; set; } = null!;
 
         // Colección de fechas para tutorías
-        public virtual ICollection<DateTime> FechasTutoria { get; set; } = new List<DateTime>();
+        public virtual List<DateTime> FechasTutoria { get; set; } = new List<DateTime>();
 
         public int AlumnoId { get; set; }
         public Alumno Alumno { get; set; } = null!;

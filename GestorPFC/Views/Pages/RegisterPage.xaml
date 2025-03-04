@@ -20,39 +20,52 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="1" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="Registro de Usuario" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock Text="Registro de Usuario" Margin="10" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
 
+            <!-- Campo de Nombre -->
+            <ui:TextBox PlaceholderText="Nombre"
+                        Text="{Binding ViewModel.Nombre, UpdateSourceTrigger=PropertyChanged}"
+                        Height="40">
+                <ui:TextBox.Icon>
+                    <ui:SymbolIcon Symbol="Pen16"/>
+                </ui:TextBox.Icon>
+            </ui:TextBox>
+
+            <!-- Campo de Nombre de Usuario -->
             <ui:TextBox PlaceholderText="Nombre de usuario"
-                        Text="{Binding NombreUsuario, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding ViewModel.NombreUsuario, UpdateSourceTrigger=PropertyChanged}"
                         Height="40">
                 <ui:TextBox.Icon>
                     <ui:SymbolIcon Symbol="Person12"/>
                 </ui:TextBox.Icon>
             </ui:TextBox>
 
+            <!-- Campo de Correo -->
             <ui:TextBox PlaceholderText="Correo electrónico"
-                        Text="{Binding Correo, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding ViewModel.Correo, UpdateSourceTrigger=PropertyChanged}"
                         Height="40">
                 <ui:TextBox.Icon>
                     <ui:SymbolIcon Symbol="Mail24"/>
                 </ui:TextBox.Icon>
             </ui:TextBox>
 
+            <!-- Campo de Contraseña -->
             <ui:PasswordBox PlaceholderText="Contraseña"
-                            Password="{Binding Contraseña, Mode=TwoWay}"
+                            Password="{Binding ViewModel.Contraseña, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Height="40">
                 <ui:PasswordBox.Icon>
                     <ui:SymbolIcon Symbol="Key24"/>
                 </ui:PasswordBox.Icon>
             </ui:PasswordBox>
 
+            <!-- Botón para Registrarse -->
             <ui:Button Content="Registrarse"
-                       Command="{Binding RegisterCommand}"
-                       Height="45"
+                       Command="{Binding ViewModel.RegisterCommand}"
+                       Height="35"
                        HorizontalAlignment="Center"
                        Appearance="Primary"/>
 
-            <!-- Botón para volver al Login -->
+            <!-- Botón para ir al Login -->
             <ui:Button Content="¿Ya tienes cuenta? Inicia sesión"
                        Command="{Binding ViewModel.NavigateToLoginCommand, Mode=OneWay}"
                        Height="40"

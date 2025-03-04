@@ -9,9 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DTOs\**" />
     <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="DTOs\**" />
     <EmbeddedResource Remove="Resources\**" />
+    <None Remove="DTOs\**" />
     <None Remove="Resources\**" />
+    <Page Remove="DTOs\**" />
     <Page Remove="Resources\**" />
   </ItemGroup>
 
@@ -20,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
@@ -32,6 +35,10 @@
 		<PackageReference Include="WPF-UI.DependencyInjection" Version="4.0.0-rc.3" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RestAPI\RestAPI.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

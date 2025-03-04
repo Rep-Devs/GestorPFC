@@ -152,6 +152,7 @@ namespace RestAPI.Repository
                 Name = userRegistrationDto.Name,
                 Email = userRegistrationDto.Email,
                 NormalizedEmail = userRegistrationDto.Email.ToUpper()
+
             };
 
             var result = await _userManager.CreateAsync(user, userRegistrationDto.Password);

@@ -9,5 +9,6 @@ namespace RestAPI.Models.Entity
 
         // Propiedad adicional para el email completo del usuario.
         public string Email { get; set; }
+
     }
 }
