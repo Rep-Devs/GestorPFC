@@ -28,6 +28,23 @@ namespace GestorPFC.Views.Pages
             DataContext = this;
 
             InitializeComponent();
+            viewModel.OnPageLoaded();
+        }
+
+        private void ListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+            var propuestaSeleccionada = ViewModel.PropuestaSeleccionada;
+
+            if (propuestaSeleccionada != null)
+            {
+
+                MessageBox.Show($"Título: {propuestaSeleccionada.Titulo}\n" +
+                                $"Descripción: {propuestaSeleccionada.Descripcion}\n" +
+                                $"Departamento: {propuestaSeleccionada.Departamento}\n" +
+                                $"Es Proyecto: {propuestaSeleccionada.BooleanProyecto}\n" +
+                                $"Alumno ID: {propuestaSeleccionada.AlumnoId}");
+            }
         }
     }
     

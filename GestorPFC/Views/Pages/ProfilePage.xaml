@@ -14,7 +14,7 @@
 
     <Grid>
         <ui:Button Content="Cerrar Sesión"
-                Command="{Binding LogoutCommand}"
+                Command="{Binding ViewModel.LogoutCommand}"
                 Height="45"
                 HorizontalAlignment="Center"
                 Appearance="Primary"

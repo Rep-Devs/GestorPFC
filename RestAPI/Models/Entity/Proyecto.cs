@@ -20,17 +20,16 @@
         public int DepartamentoId { get; set; }
         public Departamento Departamento { get; set; } = null!;
 
-        // Colección de fechas para tutorías
         public virtual List<DateTime> FechasTutoria { get; set; } = new List<DateTime>();
 
         public int AlumnoId { get; set; }
         public Alumno Alumno { get; set; } = null!;
 
-        // Tutor asignado al proyecto (un Profesor)
+
         public int? TutorProyectoId { get; set; }
         public Profesor TutorProyecto { get; set; } = null!;
 
-        // Constructor basado en una propuesta aprobada, debera ir a la interfaz grafica en una validacion al cambiar el estado de la propuesta
+      
         public Proyecto(Propuesta propuesta)
         {
             if (propuesta == null || propuesta.Estado != EstadoPropuesta.Aceptada || !propuesta.BooleanProyecto)
@@ -39,11 +38,11 @@
             Titulo = propuesta.Titulo;
             Descripcion = propuesta.Descripcion;
             AlumnoId = propuesta.AlumnoId;
-            // Se asume que el Departamento se obtiene a través del curso del alumno.
+
             Departamento = propuesta.Alumno.Curso.Departamento;
         }
 
-        // Constructor por defecto para EF Core.
+
         public Proyecto() { }
     }
 }

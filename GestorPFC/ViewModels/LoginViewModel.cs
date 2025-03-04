@@ -38,7 +38,7 @@ namespace GestorPFC.ViewModels
         private string _password = string.Empty;
 
         [ObservableProperty]
-        private bool _isLoginEnabled = false; // Botón deshabilitado por defecto
+        private bool _isLoginEnabled = false;
 
         [RelayCommand]
         private async Task CheckLogin()
@@ -57,28 +57,26 @@ namespace GestorPFC.ViewModels
 
             try
             {
-                // Enviar la solicitud POST al backend para hacer el login
+
                 var response = await _httpClient.PostAsJsonAsync("https://localhost:7060/api/User/login", loginData);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Deserializa la respuesta
+
                     var apiResponse = await response.Content.ReadFromJsonAsync<UserLoginResponseDTO>();
 
                     if (apiResponse?.IsSuccess == true && apiResponse.Result != null)
                     {
                         var userResponse = apiResponse.Result;
 
-                        // Login exitoso, almacena el token
                         string token = userResponse.Token;
 
-                        // Guardar el token para usarlo en futuras peticiones
+
                         System.Windows.Application.Current.Properties["authToken"] = token;
 
-                        // Mensaje de bienvenida con el nombre del usuario
+
                         System.Windows.MessageBox.Show($"Bienvenido {userResponse.User.Name}");
 
-                        // Redirige al Dashboard u otra página
                         _navigationService.Navigate(typeof(ProjectPage));
                     }
                     else
@@ -108,11 +106,6 @@ namespace GestorPFC.ViewModels
             IsLoginEnabled = !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
         }
 
-        [RelayCommand]
-        private void Login()
-        {
-            _navigationService.Navigate(typeof(DashboardPage));
-        }
     }
 
 

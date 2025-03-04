@@ -16,7 +16,7 @@ namespace RestAPI.Models.DTOs.UserDTO
         public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Field required: Password")]
-        [PasswordValidation] // Asegúrate de tener implementado este atributo en Helpers
+        [PasswordValidation]
         public string Password { get; set; } = null!;
 
         [Required(ErrorMessage = "Field required: Role")]

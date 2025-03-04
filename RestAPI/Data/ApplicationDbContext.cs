@@ -11,7 +11,6 @@ namespace RestAPI.Data
         {
         }
 
-        // DbSets para cada entidad
         public DbSet<User> Usuarios { get; set; }
         public DbSet<Curso> Cursos { get; set; }
         public DbSet<Alumno> Alumnos { get; set; }
@@ -24,7 +23,7 @@ namespace RestAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Relación muchos a muchos entre Curso y Profesor sin cascada en ninguno de los lados
+
             modelBuilder.Entity<Curso>()
                 .HasMany(c => c.Profesores)
                 .WithMany(p => p.Cursos)
@@ -42,21 +41,21 @@ namespace RestAPI.Data
                         .OnDelete(DeleteBehavior.NoAction)
                 );
 
-            // Relación uno a muchos para el Tutor del curso
+
             modelBuilder.Entity<Curso>()
                 .HasOne(c => c.Tutor)
-                .WithMany() // Sin navegación inversa para evitar ambigüedades
+                .WithMany()
                 .HasForeignKey(c => c.TutorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configurar la relación entre Proyecto y Departamento para evitar cascadas múltiples.
+
             modelBuilder.Entity<Proyecto>()
                 .HasOne(p => p.Departamento)
-                .WithMany() // Asumiendo que Departamento no tiene navegación inversa a Proyectos.
+                .WithMany() 
                 .HasForeignKey(p => p.DepartamentoId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Si es necesario, podrías configurar otras relaciones (por ejemplo, Proyecto con Alumno o TutorProyecto)
+
         }
     }
 }

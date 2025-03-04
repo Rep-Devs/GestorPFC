@@ -15,7 +15,7 @@ namespace RestAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "alumno, profesor")]
+    [Authorize(Roles = "alumno, profesor, admin")]
     public class ProyectoController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +23,11 @@ namespace RestAPI.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<ProyectoController> _logger;
 
-        public ProyectoController(IProyectoRepository proyectoRepository, IMapper mapper, ILogger<ProyectoController> logger, ApplicationDbContext context)
+        public ProyectoController(
+            IProyectoRepository proyectoRepository,
+            IMapper mapper,
+            ILogger<ProyectoController> logger,
+            ApplicationDbContext context)
         {
             _proyectoRepository = proyectoRepository;
             _mapper = mapper;
@@ -32,11 +36,16 @@ namespace RestAPI.Controllers
         }
 
         // GET: api/Proyecto
-        // Filtrado: si es alumno, se filtra por AlumnoId; si es profesor, se filtra por DepartamentoId.
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            if (User.IsInRole("alumno"))
+            if (User.IsInRole("admin"))
+            {
+                var proyectos = await _proyectoRepository.GetAllAsync();
+                var dtos = _mapper.Map<IEnumerable<ProyectoDto>>(proyectos);
+                return Ok(dtos);
+            }
+            else if (User.IsInRole("alumno"))
             {
                 var alumnoClaim = User.FindFirst("AlumnoId")?.Value;
                 if (!int.TryParse(alumnoClaim, out int alumnoId))
@@ -65,11 +74,20 @@ namespace RestAPI.Controllers
         }
 
         // POST: api/Proyecto
-        // Si el usuario es alumno, se asigna el AlumnoId; si es profesor, se asigna el DepartamentoId.
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProyectoDTO createDto)
         {
-            if (User.IsInRole("alumno"))
+            if (User.IsInRole("admin"))
+            {
+                var proyecto = _mapper.Map<Proyecto>(createDto);
+                proyecto.FechaEntrega = System.DateTime.UtcNow.AddDays(30);
+                proyecto.EstadoProyecto = EstadoProyecto.Desarrollo;
+                _context.Proyectos.Add(proyecto);
+                await _context.SaveChangesAsync();
+                var proyectoCreadoDto = _mapper.Map<ProyectoDto>(proyecto);
+                return CreatedAtAction(nameof(GetAll), new { id = proyecto.Id }, proyectoCreadoDto);
+            }
+            else if (User.IsInRole("alumno"))
             {
                 var alumnoClaim = User.FindFirst("AlumnoId")?.Value;
                 if (!int.TryParse(alumnoClaim, out int alumnoId))
@@ -111,11 +129,22 @@ namespace RestAPI.Controllers
         }
 
         // PUT: api/Proyecto/{id}
-        // Permite actualizar un proyecto; se verifica que pertenezca al usuario autenticado.
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] ProyectoDto proyectoDto)
         {
-            if (User.IsInRole("alumno"))
+            if (User.IsInRole("admin"))
+            {
+                var proyecto = await _context.Proyectos.FirstOrDefaultAsync(p => p.Id == id);
+                if (proyecto == null)
+                    return NotFound("Proyecto no encontrado.");
+
+                _mapper.Map(proyectoDto, proyecto);
+                _context.Proyectos.Update(proyecto);
+                await _context.SaveChangesAsync();
+                var updatedDto = _mapper.Map<ProyectoDto>(proyecto);
+                return Ok(updatedDto);
+            }
+            else if (User.IsInRole("alumno"))
             {
                 var alumnoClaim = User.FindFirst("AlumnoId")?.Value;
                 if (!int.TryParse(alumnoClaim, out int alumnoId))
