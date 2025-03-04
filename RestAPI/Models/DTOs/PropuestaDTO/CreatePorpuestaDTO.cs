@@ -10,7 +10,6 @@ namespace RestAPI.Models.DTOs.PropuestaDTO
         [Required(ErrorMessage = "Field required: Descripcion")]
         public string Descripcion { get; set; } = null!;
 
-        // El Departamento se asigna a partir del curso del alumno
         [Required(ErrorMessage = "Field required: Departamento")]
         public string Departamento { get; set; } = null!;
 

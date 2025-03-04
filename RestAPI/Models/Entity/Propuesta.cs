@@ -17,9 +17,9 @@
         public DateTime? FechaGestion { get; set; }
 
         public EstadoPropuesta Estado { get; set; }
-        // Se determina en función del curso del alumno
+
         public string Departamento { get; set; } = null!;
-        // Indica si, al cambiar de false a true, se creará un proyecto.
+
         public bool BooleanProyecto { get; set; }
 
         public int AlumnoId { get; set; }

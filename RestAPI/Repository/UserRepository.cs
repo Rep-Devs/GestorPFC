@@ -23,7 +23,7 @@ namespace RestAPI.Repository
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private readonly int TokenExpirationMinutes = 30; // Tiempo de expiración del token en minutos
+        private readonly int TokenExpirationMinutes = 30;
 
         public UserRepository(ApplicationDbContext context, IConfiguration config,
             UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
@@ -65,28 +65,21 @@ namespace RestAPI.Repository
                 new Claim(ClaimTypes.Role, roles.FirstOrDefault() ?? "")
             };
 
-            // Si el usuario tiene rol "alumno", agregar la claim "AlumnoId" obtenida de la tabla Alumnos.
             if (roles.Contains("alumno"))
             {
                 var alumno = await _context.Alumnos.FirstOrDefaultAsync(a => a.Email.ToLower() == user.Email.ToLower());
                 if (alumno != null)
-                {
                     claims.Add(new Claim("AlumnoId", alumno.Id.ToString()));
-                }
             }
-            // Si el usuario tiene rol "profesor", agregar la claim "DepartamentoId"
             if (roles.Contains("profesor"))
             {
                 var profesor = await _context.Profesores.FirstOrDefaultAsync(p => p.Email.ToLower() == user.Email.ToLower());
                 if (profesor != null)
-                {
                     claims.Add(new Claim("DepartamentoId", profesor.DepartamentoId.ToString()));
-                }
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secretKey);
-
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -95,7 +88,6 @@ namespace RestAPI.Repository
             };
 
             var jwtToken = tokenHandler.CreateToken(tokenDescriptor);
-
             return new UserLoginResponseDTO
             {
                 Token = tokenHandler.WriteToken(jwtToken),
@@ -105,31 +97,20 @@ namespace RestAPI.Repository
 
         public async Task<UserLoginResponseDTO> Register(UserRegistrationDTO userRegistrationDto)
         {
-            // Determinar el rol a asignar según el email
             string roleToAssign = string.Empty;
-
-            // Buscar en la tabla de Alumnos
             var alumno = await _context.Alumnos.FirstOrDefaultAsync(a => a.Email.ToLower() == userRegistrationDto.Email.ToLower());
             if (alumno != null)
-            {
                 roleToAssign = "alumno";
-            }
             else
             {
-                // Buscar en la tabla de Profesores
                 var profesor = await _context.Profesores.FirstOrDefaultAsync(p => p.Email.ToLower() == userRegistrationDto.Email.ToLower());
                 if (profesor != null)
-                {
                     roleToAssign = "profesor";
-                }
                 else
                 {
-                    // Opción: auto-crear un registro de alumno si no se encuentra
                     var curso = _context.Cursos.FirstOrDefault();
                     if (curso == null)
-                    {
                         throw new Exception("No existe ningún curso para asociar al alumno.");
-                    }
                     alumno = new Alumno
                     {
                         Nombre = userRegistrationDto.Name,
@@ -140,19 +121,16 @@ namespace RestAPI.Repository
                     };
                     _context.Alumnos.Add(alumno);
                     await _context.SaveChangesAsync();
-
                     roleToAssign = "alumno";
                 }
             }
 
-            // Crear el usuario a partir de los datos del DTO
             AppUser user = new AppUser()
             {
                 UserName = userRegistrationDto.UserName,
                 Name = userRegistrationDto.Name,
                 Email = userRegistrationDto.Email,
                 NormalizedEmail = userRegistrationDto.Email.ToUpper()
-
             };
 
             var result = await _userManager.CreateAsync(user, userRegistrationDto.Password);
@@ -162,31 +140,21 @@ namespace RestAPI.Repository
                 throw new Exception($"Error al crear el usuario: {errors}");
             }
 
-            // Asegurarse de que existan los roles básicos
             if (!await _roleManager.RoleExistsAsync("admin"))
-            {
                 await _roleManager.CreateAsync(new IdentityRole("admin"));
-            }
             if (!await _roleManager.RoleExistsAsync("alumno"))
-            {
                 await _roleManager.CreateAsync(new IdentityRole("alumno"));
-            }
             if (!await _roleManager.RoleExistsAsync("profesor"))
-            {
                 await _roleManager.CreateAsync(new IdentityRole("profesor"));
-            }
 
-            // Asignar el rol determinado al usuario
             await _userManager.AddToRoleAsync(user, roleToAssign);
-
             return new UserLoginResponseDTO
             {
                 User = user,
-                Token = string.Empty // El token se genera al hacer login
+                Token = string.Empty
             };
         }
 
-        // Método para obtener la lista de usuarios junto con su rol asignado.
         public async Task<List<UserDTO>> GetUserDTOsAsync()
         {
             var users = await _context.Users.ToListAsync();

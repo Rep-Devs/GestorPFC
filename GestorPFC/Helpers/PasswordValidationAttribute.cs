@@ -12,7 +12,7 @@ namespace GestorPFC.Helpers
 
             string password = value.ToString()!;
 
-            // Ejemplo: La contraseña debe tener al menos 8 caracteres, 
+            // La contraseña debe tener al menos 8 caracteres, 
             // una letra mayúscula, una minúscula y un dígito.
             if (password.Length < 8)
             {

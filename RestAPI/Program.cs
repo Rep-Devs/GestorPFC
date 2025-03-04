@@ -14,7 +14,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar el DbContext con SQL Server usando la cadena "SqlConnection" en appsettings.json
+// Configurar el DbContext con SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
@@ -23,13 +23,13 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Registrar AutoMapper (buscando perfiles en el ensamblado donde se encuentra MappingProfile)
+// Registrar AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Registrar MemoryCache para los repositorios que lo utilizan
+// Registrar MemoryCache para los repositorios
 builder.Services.AddMemoryCache();
 
-// Registrar los repositorios específicos de GestorPFC
+// Registrar los repositorios
 builder.Services.AddScoped<IAlumnoRepository, AlumnoRepository>();
 builder.Services.AddScoped<ICursoRepository, CursoRepository>();
 builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
@@ -58,7 +58,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Agregar controladores y Swagger para la documentación de la API
+// Agregar controladores y Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -88,7 +88,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Configurar CORS (en desarrollo se permite cualquier origen)
+// Configurar CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", build =>
@@ -97,13 +97,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configurar Logging (opcional)
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 var app = builder.Build();
 
-// Crear un scope para ejecutar la semilla.
+// Ejecutar la semilla de datos
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -111,7 +110,6 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedAsync(context, services);
 }
 
-// Configurar el pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -16,7 +16,7 @@ namespace RestAPI.Repository
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _cache;
         private readonly string _propuestaCacheKey = "PropuestaCacheKey";
-        private readonly int _cacheExpirationTime = 3600; // en segundos
+        private readonly int _cacheExpirationTime = 3600;
 
         public PropuestaRepository(ApplicationDbContext context, IMemoryCache cache)
         {

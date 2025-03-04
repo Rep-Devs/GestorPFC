@@ -19,7 +19,6 @@ namespace RestAPI.Models.DTOs.ProyectoDTO
         [Required(ErrorMessage = "Field required: AlumnoId")]
         public int AlumnoId { get; set; }
 
-        // TutorProyectoId es opcional en la creación, se asigna posteriormente
         public int? TutorProyectoId { get; set; }
     }
 }

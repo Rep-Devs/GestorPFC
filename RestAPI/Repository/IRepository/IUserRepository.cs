@@ -13,7 +13,6 @@ namespace RestAPI.Repository.IRepository
         Task<UserLoginResponseDTO> Login(UserLoginDTO userLoginDto);
         Task<UserLoginResponseDTO> Register(UserRegistrationDTO userRegistrationDto);
 
-        // Agrega la firma para obtener los usuarios con su rol:
         Task<List<UserDTO>> GetUserDTOsAsync();
     }
 }

@@ -79,7 +79,7 @@ namespace RestAPI.Controllers
                     return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating entity");
 
                 var dto = _mapper.Map<TDto>(entity);
-                // Se utiliza CreatedAtRoute para retornar un 201 y la ubicación del recurso creado.
+
                 return CreatedAtRoute($"{ControllerContext.ActionDescriptor.ControllerName}_GetEntity", new { id = dto.GetType().GetProperty("Id")?.GetValue(dto) }, dto);
             }
             catch (Exception ex)
@@ -104,7 +104,6 @@ namespace RestAPI.Controllers
                 if (entity == null)
                     return NotFound();
 
-                // Mapea los cambios del DTO a la entidad existente
                 _mapper.Map(dto, entity);
 
                 if (!await _repository.UpdateAsync(entity))

@@ -48,7 +48,6 @@ namespace GestorPFC
 
                 // ViewModels
                 _ = services.AddSingleton<LoginViewModel>();
-                _ = services.AddSingleton<DashboardViewModel>();
                 _ = services.AddSingleton<RegisterViewModel>();
                 _ = services.AddSingleton<ProfileViewModel>();
                 _ = services.AddSingleton<CalendarViewModel>();
@@ -58,7 +57,6 @@ namespace GestorPFC
 
                 // Views
                 _ = services.AddSingleton<LoginPage>();
-                _ = services.AddSingleton<DashboardPage>();
                 _ = services.AddSingleton<RegisterPage>();
                 _ = services.AddSingleton<ProfilePage>();
                 _ = services.AddSingleton<CalendarPage>();

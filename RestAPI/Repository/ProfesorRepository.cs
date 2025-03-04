@@ -16,7 +16,7 @@ namespace RestAPI.Repository
         private readonly IMemoryCache _cache;
 
         private readonly string _profesorCacheKey = "ProfesorCacheKey";
-        private readonly int _cacheExpirationTime = 3600; // en segundos
+        private readonly int _cacheExpirationTime = 3600;
 
         public ProfesorRepository(ApplicationDbContext context, IMemoryCache cache)
         {

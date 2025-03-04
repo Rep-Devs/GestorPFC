@@ -1,52 +1,81 @@
 ﻿using System.Collections.ObjectModel;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GestorPFC.Models.DTOs;
+using GestorPFC.Models;
 using RestAPI.Models.Entity;
+using Wpf.Ui;
 
 namespace GestorPFC.ViewModels
 {
-    public class ProjectViewModel : ViewModel
+    public partial class ProjectViewModel : ViewModel
     {
         private readonly HttpClient _httpClient;
+        private readonly INavigationService _navigationService;
 
-        public ObservableCollection<Proyecto> Proyectos { get; set; }
-        public Proyecto ProyectoSeleccionado { get; set; }
 
-        public ICommand CargarProyectosCommand { get; }
+        [ObservableProperty]
+        private List<ProjectDTO> _proyectos = new List<ProjectDTO>();
 
-        public ProjectViewModel()
+
+        [ObservableProperty]
+        private ProjectDTO _proyectoSeleccionado;
+
+        public ProjectViewModel(HttpClient httpClient, INavigationService navigationService)
         {
-            _httpClient = new HttpClient();
-            Proyectos = new ObservableCollection<Proyecto>();
-            CargarProyectosCommand = new RelayCommand(async () => await CargarProyectos());
-            _ = CargarProyectos();
+            _httpClient = httpClient;
+            _navigationService = navigationService;
         }
 
+        [RelayCommand]
         private async Task CargarProyectos()
         {
-            string apiUrl = "https://localhost:7060/api/Proyecto"; 
-
             try
             {
-                var response = await _httpClient.GetAsync(apiUrl);
+
+                var token = System.Windows.Application.Current.Properties["authToken"]?.ToString();
+
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    System.Windows.MessageBox.Show("No se encontró el token de autenticación.");
+                    return;
+                }
+
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+ 
+                var response = await _httpClient.GetAsync("https://localhost:7060/api/Proyecto");
+
+
                 if (response.IsSuccessStatusCode)
                 {
-                    var json = await response.Content.ReadAsStringAsync();
-                    var proyectos = JsonSerializer.Deserialize<List<Proyecto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    var proyectos = await response.Content.ReadFromJsonAsync<List<ProjectDTO>>();
 
-                    Proyectos.Clear();
-                    foreach (var proyecto in proyectos)
+                    if (proyectos != null)
                     {
-                        Proyectos.Add(proyecto);
+                        Proyectos = proyectos;
                     }
+                }
+                else
+                {
+                    
+                    System.Windows.MessageBox.Show($"Error al cargar los proyectos. Código de estado: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error al obtener proyectos: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error al cargar los proyectos: {ex.Message}");
             }
+        }
+
+        public void OnPageLoaded()
+        {
+            CargarProyectos();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace RestAPI.Repository
         private readonly IMemoryCache _cache;
 
         private readonly string _departamentoCacheKey = "DepartamentoCacheKey";
-        private readonly int _cacheExpirationTime = 3600; // en segundos
+        private readonly int _cacheExpirationTime = 3600; 
 
         public DepartamentoRepository(ApplicationDbContext context, IMemoryCache cache)
         {

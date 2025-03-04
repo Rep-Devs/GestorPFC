@@ -1,15 +1,31 @@
 ﻿<Page x:Class="GestorPFC.Views.Pages.ProposalPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:GestorPFC.Views.Pages"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProposalPage"
-      Background="BlueViolet">
+      Background="White">
 
     <Grid>
-        
+        <ListView ItemsSource="{Binding ViewModel.Propuestas}" 
+                  SelectedItem="{Binding ViewModel.PropuestaSeleccionada}" 
+                  Background="White" Foreground="Black" Margin="10"
+                  MouseDoubleClick="ListView_MouseDoubleClick">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Titulo}" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Descripcion}" FontSize="14"/>
+                            <TextBlock Text="{Binding Departamento}" FontSize="12"/>
+                            <TextBlock Text="{Binding BooleanProyecto, StringFormat='Es Proyecto: {0}'}" FontSize="12" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

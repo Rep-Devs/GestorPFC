@@ -28,6 +28,26 @@ namespace GestorPFC.Views.Pages
             DataContext = this;
 
             InitializeComponent();
+
+            viewModel.OnPageLoaded();
+        }
+
+        private void ListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Verifica si un proyecto ha sido seleccionado
+            var proyectoSeleccionado = ViewModel.ProyectoSeleccionado;
+
+            if (proyectoSeleccionado != null)
+            {
+                // Muestra los detalles del proyecto en un MessageBox
+                MessageBox.Show($"Proyecto: {proyectoSeleccionado.Titulo}\n" +
+                                $"Descripción: {proyectoSeleccionado.Descripcion}\n" +
+                                $"Estado: {proyectoSeleccionado.EstadoProyecto}\n" +
+                                $"Fecha de Entrega: {proyectoSeleccionado.FechaEntrega.ToString("dd/MM/yyyy")}\n" +
+                                $"Departamento ID: {proyectoSeleccionado.DepartamentoId}\n" +
+                                $"Alumno ID: {proyectoSeleccionado.AlumnoId}\n" +
+                                $"Tutor ID: {proyectoSeleccionado.TutorProyectoId}");
+            }
         }
     }
 }
