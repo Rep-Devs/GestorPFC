@@ -1,22 +1,156 @@
 ﻿using AutoMapper;
-using RestAPI.Models.DTOs.ProyectoDTO;
-using RestAPI.Models.Entity;  
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RestAPI.Controllers;
-
+using RestAPI.Data;
+using RestAPI.Models.DTOs.ProyectoDTO;
+using RestAPI.Models.Entity;
 using RestAPI.Repository.IRepository;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace RestAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProyectoController : BaseController<Proyecto, ProyectoDto, CreateProyectoDTO>
+    [Authorize(Roles = "alumno, profesor")]
+    public class ProyectoController : ControllerBase
     {
-        public ProyectoController(IProyectoRepository proyectoRepository, IMapper mapper, ILogger<ProyectoController> logger)
-            : base(proyectoRepository, mapper, logger)
+        private readonly ApplicationDbContext _context;
+        private readonly IProyectoRepository _proyectoRepository;
+        private readonly IMapper _mapper;
+        private readonly ILogger<ProyectoController> _logger;
+
+        public ProyectoController(IProyectoRepository proyectoRepository, IMapper mapper, ILogger<ProyectoController> logger, ApplicationDbContext context)
         {
+            _proyectoRepository = proyectoRepository;
+            _mapper = mapper;
+            _logger = logger;
+            _context = context;
+        }
+
+        // GET: api/Proyecto
+        // Filtrado: si es alumno, se filtra por AlumnoId; si es profesor, se filtra por DepartamentoId.
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            if (User.IsInRole("alumno"))
+            {
+                var alumnoClaim = User.FindFirst("AlumnoId")?.Value;
+                if (!int.TryParse(alumnoClaim, out int alumnoId))
+                    return Unauthorized("No se encontró el AlumnoId en las claims.");
+
+                var proyectos = await _proyectoRepository.GetAllAsync();
+                var proyectosFiltrados = proyectos.Where(p => p.AlumnoId == alumnoId);
+                var dtos = _mapper.Map<IEnumerable<ProyectoDto>>(proyectosFiltrados);
+                return Ok(dtos);
+            }
+            else if (User.IsInRole("profesor"))
+            {
+                var deptClaim = User.FindFirst("DepartamentoId")?.Value;
+                if (!int.TryParse(deptClaim, out int deptId))
+                    return Unauthorized("No se encontró el DepartamentoId en las claims.");
+
+                var proyectos = await _proyectoRepository.GetAllAsync();
+                var proyectosFiltrados = proyectos.Where(p => p.DepartamentoId == deptId);
+                var dtos = _mapper.Map<IEnumerable<ProyectoDto>>(proyectosFiltrados);
+                return Ok(dtos);
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        // POST: api/Proyecto
+        // Si el usuario es alumno, se asigna el AlumnoId; si es profesor, se asigna el DepartamentoId.
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateProyectoDTO createDto)
+        {
+            if (User.IsInRole("alumno"))
+            {
+                var alumnoClaim = User.FindFirst("AlumnoId")?.Value;
+                if (!int.TryParse(alumnoClaim, out int alumnoId))
+                    return Unauthorized("No se encontró el AlumnoId en las claims.");
+
+                var proyecto = _mapper.Map<Proyecto>(createDto);
+                proyecto.AlumnoId = alumnoId;
+                proyecto.FechaEntrega = System.DateTime.UtcNow.AddDays(30);
+                proyecto.EstadoProyecto = EstadoProyecto.Desarrollo;
+                _context.Proyectos.Add(proyecto);
+                await _context.SaveChangesAsync();
+                var proyectoCreadoDto = _mapper.Map<ProyectoDto>(proyecto);
+                return CreatedAtAction(nameof(GetAll), new { id = proyecto.Id }, proyectoCreadoDto);
+            }
+            else if (User.IsInRole("profesor"))
+            {
+                var deptClaim = User.FindFirst("DepartamentoId")?.Value;
+                if (!int.TryParse(deptClaim, out int deptId))
+                    return Unauthorized("No se encontró el DepartamentoId en las claims.");
+
+                var dept = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == deptId);
+                if (dept == null)
+                    return NotFound("No se encontró el departamento del profesor.");
+
+                var proyecto = _mapper.Map<Proyecto>(createDto);
+                proyecto.DepartamentoId = dept.Id;
+                proyecto.Departamento = dept;
+                proyecto.FechaEntrega = System.DateTime.UtcNow.AddDays(30);
+                proyecto.EstadoProyecto = EstadoProyecto.Desarrollo;
+                _context.Proyectos.Add(proyecto);
+                await _context.SaveChangesAsync();
+                var proyectoCreadoDto = _mapper.Map<ProyectoDto>(proyecto);
+                return CreatedAtAction(nameof(GetAll), new { id = proyecto.Id }, proyectoCreadoDto);
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        // PUT: api/Proyecto/{id}
+        // Permite actualizar un proyecto; se verifica que pertenezca al usuario autenticado.
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ProyectoDto proyectoDto)
+        {
+            if (User.IsInRole("alumno"))
+            {
+                var alumnoClaim = User.FindFirst("AlumnoId")?.Value;
+                if (!int.TryParse(alumnoClaim, out int alumnoId))
+                    return Unauthorized("No se encontró el AlumnoId en las claims.");
+
+                var proyecto = await _context.Proyectos.FirstOrDefaultAsync(p => p.Id == id && p.AlumnoId == alumnoId);
+                if (proyecto == null)
+                    return NotFound("Proyecto no encontrado o no pertenece al alumno.");
+
+                _mapper.Map(proyectoDto, proyecto);
+                _context.Proyectos.Update(proyecto);
+                await _context.SaveChangesAsync();
+                var updatedDto = _mapper.Map<ProyectoDto>(proyecto);
+                return Ok(updatedDto);
+            }
+            else if (User.IsInRole("profesor"))
+            {
+                var deptClaim = User.FindFirst("DepartamentoId")?.Value;
+                if (!int.TryParse(deptClaim, out int deptId))
+                    return Unauthorized("No se encontró el DepartamentoId en las claims.");
+
+                var proyecto = await _context.Proyectos.FirstOrDefaultAsync(p => p.Id == id && p.DepartamentoId == deptId);
+                if (proyecto == null)
+                    return NotFound("Proyecto no encontrado o no pertenece al departamento del profesor.");
+
+                _mapper.Map(proyectoDto, proyecto);
+                _context.Proyectos.Update(proyecto);
+                await _context.SaveChangesAsync();
+                var updatedDto = _mapper.Map<ProyectoDto>(proyecto);
+                return Ok(updatedDto);
+            }
+            else
+            {
+                return Forbid();
+            }
         }
     }
 }

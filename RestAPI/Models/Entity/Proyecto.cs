@@ -30,7 +30,7 @@
         public int? TutorProyectoId { get; set; }
         public Profesor TutorProyecto { get; set; } = null!;
 
-        // Constructor basado en una propuesta aprobada.
+        // Constructor basado en una propuesta aprobada, debera ir a la interfaz grafica en una validacion al cambiar el estado de la propuesta
         public Proyecto(Propuesta propuesta)
         {
             if (propuesta == null || propuesta.Estado != EstadoPropuesta.Aceptada || !propuesta.BooleanProyecto)
