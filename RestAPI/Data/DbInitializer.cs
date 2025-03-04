@@ -11,26 +11,23 @@ namespace RestAPI.Data
     {
         public static async Task SeedAsync(ApplicationDbContext context, IServiceProvider serviceProvider)
         {
-            // Asegurarse de que la base de datos esté creada y aplicar migraciones pendientes.
+            // Aplicar migraciones pendientes
             await context.Database.MigrateAsync();
 
-            // 1. Sembrar el usuario administrador
             var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            // Configura las credenciales del administrador; podrías leer esto desde la configuración si lo prefieres.
+            // --- Semilla de Usuarios Identity ---
+            // 1. Administrador
             string adminRole = "admin";
             string adminUserName = "admin";
             string adminEmail = "admin@example.com";
             string adminPassword = "UnaContraseñaSegura@123";
 
-            // Crear el rol admin si no existe.
             if (!await roleManager.RoleExistsAsync(adminRole))
             {
                 await roleManager.CreateAsync(new IdentityRole(adminRole));
             }
-
-            // Verificar si el usuario admin ya existe.
             var adminUser = await userManager.FindByNameAsync(adminUserName);
             if (adminUser == null)
             {
@@ -40,18 +37,17 @@ namespace RestAPI.Data
                     Email = adminEmail,
                     Name = "Administrador"
                 };
-
-                var result = await userManager.CreateAsync(adminUser, adminPassword);
-                if (!result.Succeeded)
+                var resultAdmin = await userManager.CreateAsync(adminUser, adminPassword);
+                if (!resultAdmin.Succeeded)
                 {
-                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    var errors = string.Join(", ", resultAdmin.Errors.Select(e => e.Description));
                     throw new Exception($"Error al crear el usuario admin: {errors}");
                 }
-
                 await userManager.AddToRoleAsync(adminUser, adminRole);
             }
 
-            // 2. Sembrar Departamento si no existe ninguno.
+            // --- Semilla de Datos del Dominio ---
+            // 2. Departamento
             if (!context.Departamentos.Any())
             {
                 var departamento = new Departamento
@@ -61,11 +57,9 @@ namespace RestAPI.Data
                 context.Departamentos.Add(departamento);
                 await context.SaveChangesAsync();
             }
-
-            // Obtener el departamento (el primero existente).
             var dept = context.Departamentos.First();
 
-            // 3. Sembrar Profesor si no existe ninguno.
+            // 3. Profesor (dominio)
             if (!context.Profesores.Any())
             {
                 var profesor = new Profesor
@@ -80,10 +74,9 @@ namespace RestAPI.Data
                 await context.SaveChangesAsync();
             }
 
-            // 4. Sembrar Curso si no existe ninguno.
+            // 4. Curso
             if (!context.Cursos.Any())
             {
-                // Obtener el profesor creado para asignarlo como tutor.
                 var tutor = context.Profesores.First();
                 var curso = new Curso
                 {
@@ -95,6 +88,79 @@ namespace RestAPI.Data
                 };
                 context.Cursos.Add(curso);
                 await context.SaveChangesAsync();
+            }
+
+            // 5. Alumno (dominio)
+            if (!context.Alumnos.Any())
+            {
+                var curso = context.Cursos.First();
+                var alumno = new Alumno
+                {
+                    Nombre = "Alumno Inicial",
+                    Apellidos = "ApellidoInicial",
+                    Email = "alumno.inicial@example.com",
+                    CursoId = curso.Id,
+                    Curso = curso
+                };
+                context.Alumnos.Add(alumno);
+                await context.SaveChangesAsync();
+            }
+
+            // --- Semilla de Usuarios Identity para Alumno y Profesor ---
+            // 6. Usuario para Alumno
+            string alumnoRole = "alumno";
+            string alumnoUserName = "alumno";
+            string alumnoUserEmail = "alumno.inicial@example.com";
+            string alumnoPassword = "Alumno@123"; // Debe cumplir requisitos de Identity
+
+            if (!await roleManager.RoleExistsAsync(alumnoRole))
+            {
+                await roleManager.CreateAsync(new IdentityRole(alumnoRole));
+            }
+            var alumnoUser = await userManager.FindByNameAsync(alumnoUserName);
+            if (alumnoUser == null)
+            {
+                alumnoUser = new AppUser
+                {
+                    UserName = alumnoUserName,
+                    Email = alumnoUserEmail,
+                    Name = "Alumno Inicial"
+                };
+                var resultAlumno = await userManager.CreateAsync(alumnoUser, alumnoPassword);
+                if (!resultAlumno.Succeeded)
+                {
+                    var errors = string.Join(", ", resultAlumno.Errors.Select(e => e.Description));
+                    throw new Exception($"Error al crear el usuario alumno: {errors}");
+                }
+                await userManager.AddToRoleAsync(alumnoUser, alumnoRole);
+            }
+
+            // 7. Usuario para Profesor
+            string profesorRole = "profesor";
+            string profesorUserName = "profesor";
+            string profesorUserEmail = "profesor.inicial@example.com";
+            string profesorPassword = "Profesor@123"; // Debe cumplir requisitos de Identity
+
+            if (!await roleManager.RoleExistsAsync(profesorRole))
+            {
+                await roleManager.CreateAsync(new IdentityRole(profesorRole));
+            }
+            var profesorUser = await userManager.FindByNameAsync(profesorUserName);
+            if (profesorUser == null)
+            {
+                profesorUser = new AppUser
+                {
+                    UserName = profesorUserName,
+                    Email = profesorUserEmail,
+                    Name = "Profesor Inicial"
+                };
+                var resultProfesor = await userManager.CreateAsync(profesorUser, profesorPassword);
+                if (!resultProfesor.Succeeded)
+                {
+                    var errors = string.Join(", ", resultProfesor.Errors.Select(e => e.Description));
+                    throw new Exception($"Error al crear el usuario profesor: {errors}");
+                }
+                await userManager.AddToRoleAsync(profesorUser, profesorRole);
             }
         }
     }

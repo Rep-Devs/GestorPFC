@@ -12,6 +12,7 @@ using RestAPI.Models.DTOs.UserDTO;
 using RestAPI.Models.Entity;
 using RestAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace RestAPI.Repository
 {
@@ -22,7 +23,7 @@ namespace RestAPI.Repository
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private readonly int TokenExpirationMinutes = 30; // Ajustable según necesidad
+        private readonly int TokenExpirationMinutes = 30; // Tiempo de expiración del token en minutos
 
         public UserRepository(ApplicationDbContext context, IConfiguration config,
             UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
@@ -43,6 +44,7 @@ namespace RestAPI.Repository
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
+
         public bool IsUniqueUser(string userName)
         {
             return !_context.Users.Any(u => u.UserName == userName);
@@ -57,16 +59,37 @@ namespace RestAPI.Repository
             }
 
             var roles = await _userManager.GetRolesAsync(user);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, roles.FirstOrDefault() ?? "")
+            };
+
+            // Si el usuario tiene rol "alumno", agregar la claim "AlumnoId" obtenida de la tabla Alumnos.
+            if (roles.Contains("alumno"))
+            {
+                var alumno = await _context.Alumnos.FirstOrDefaultAsync(a => a.Email.ToLower() == user.Email.ToLower());
+                if (alumno != null)
+                {
+                    claims.Add(new Claim("AlumnoId", alumno.Id.ToString()));
+                }
+            }
+            // Si el usuario tiene rol "profesor", agregar la claim "DepartamentoId"
+            if (roles.Contains("profesor"))
+            {
+                var profesor = await _context.Profesores.FirstOrDefaultAsync(p => p.Email.ToLower() == user.Email.ToLower());
+                if (profesor != null)
+                {
+                    claims.Add(new Claim("DepartamentoId", profesor.DepartamentoId.ToString()));
+                }
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, roles.FirstOrDefault() ?? "")
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = System.DateTime.UtcNow.AddMinutes(TokenExpirationMinutes),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -85,26 +108,40 @@ namespace RestAPI.Repository
             // Determinar el rol a asignar según el email
             string roleToAssign = string.Empty;
 
-            // Buscar asíncronamente en la tabla de Alumnos
-            var alumno = await _context.Alumnos
-                                       .FirstOrDefaultAsync(a => a.Email.ToLower() == userRegistrationDto.Email.ToLower());
+            // Buscar en la tabla de Alumnos
+            var alumno = await _context.Alumnos.FirstOrDefaultAsync(a => a.Email.ToLower() == userRegistrationDto.Email.ToLower());
             if (alumno != null)
             {
                 roleToAssign = "alumno";
             }
             else
             {
-                // Si no es alumno, buscar en la tabla de Profesores
-                var profesor = await _context.Profesores
-                                             .FirstOrDefaultAsync(p => p.Email.ToLower() == userRegistrationDto.Email.ToLower());
+                // Buscar en la tabla de Profesores
+                var profesor = await _context.Profesores.FirstOrDefaultAsync(p => p.Email.ToLower() == userRegistrationDto.Email.ToLower());
                 if (profesor != null)
                 {
                     roleToAssign = "profesor";
                 }
                 else
                 {
-                    // Si el email no corresponde a ninguno, se rechaza el registro
-                    throw new Exception("El email no corresponde a ningún alumno o profesor.");
+                    // Opción: auto-crear un registro de alumno si no se encuentra
+                    var curso = _context.Cursos.FirstOrDefault();
+                    if (curso == null)
+                    {
+                        throw new Exception("No existe ningún curso para asociar al alumno.");
+                    }
+                    alumno = new Alumno
+                    {
+                        Nombre = userRegistrationDto.Name,
+                        Apellidos = "SinDefinir",
+                        Email = userRegistrationDto.Email,
+                        CursoId = curso.Id,
+                        Curso = curso
+                    };
+                    _context.Alumnos.Add(alumno);
+                    await _context.SaveChangesAsync();
+
+                    roleToAssign = "alumno";
                 }
             }
 
@@ -117,11 +154,9 @@ namespace RestAPI.Repository
                 NormalizedEmail = userRegistrationDto.Email.ToUpper()
             };
 
-            // Crear el usuario en Identity
             var result = await _userManager.CreateAsync(user, userRegistrationDto.Password);
             if (!result.Succeeded)
             {
-                // Puedes retornar un objeto de error o lanzar una excepción según prefieras
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new Exception($"Error al crear el usuario: {errors}");
             }
@@ -143,13 +178,31 @@ namespace RestAPI.Repository
             // Asignar el rol determinado al usuario
             await _userManager.AddToRoleAsync(user, roleToAssign);
 
-            // Retornar la respuesta (sin token, que se puede generar en el login)
             return new UserLoginResponseDTO
             {
                 User = user,
-                Token = string.Empty
+                Token = string.Empty // El token se genera al hacer login
             };
         }
 
+        // Método para obtener la lista de usuarios junto con su rol asignado.
+        public async Task<List<UserDTO>> GetUserDTOsAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+            var userDTOs = new List<UserDTO>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userDTOs.Add(new UserDTO
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Role = roles.FirstOrDefault() ?? ""
+                });
+            }
+            return userDTOs;
+        }
     }
 }

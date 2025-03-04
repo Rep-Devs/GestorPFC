@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using RestAPI.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestAPI.Controllers;
 using RestAPI.Models.DTOs.ProfesorDTO;
+using RestAPI.Models.Entity;
 using RestAPI.Repository.IRepository;
 
 namespace RestAPI.Controllers
